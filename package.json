@@ -2,6 +2,7 @@
   "name": "stinkygirl-net",
   "version": "1.0.0",
   "description": "A blank template to get started with Payload 3.0",
+  "main": "index.js",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -20,7 +21,6 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "@payloadcms/db-postgres": "3.70.0",
-    "@payloadcms/db-sqlite": "^3.70.0",
     "@payloadcms/next": "3.70.0",
     "@payloadcms/richtext-lexical": "3.70.0",
     "@payloadcms/ui": "3.70.0",
@@ -40,7 +40,6 @@
     "@types/node": "^22.5.4",
     "@types/react": "19.2.1",
     "@types/react-dom": "19.2.1",
-    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "4.5.2",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.4.7",
