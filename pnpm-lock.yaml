@@ -14,9 +14,6 @@ importers:
       '@payloadcms/db-postgres':
         specifier: 3.70.0
         version: 3.70.0(@libsql/client@0.14.0)(@neondatabase/serverless@1.0.2)(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))
-      '@payloadcms/db-sqlite':
-        specifier: ^3.70.0
-        version: 3.70.0(@neondatabase/serverless@1.0.2)(@types/pg@8.10.2)(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(pg@8.16.3)
       '@payloadcms/next':
         specifier: 3.70.0
         version: 3.70.0(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
@@ -69,9 +66,6 @@ importers:
       '@types/react-dom':
         specifier: 19.2.1
         version: 19.2.1(@types/react@19.2.1)
-      '@types/ws':
-        specifier: ^8.18.1
-        version: 8.18.1
       '@vitejs/plugin-react':
         specifier: 4.5.2
         version: 4.5.2(vite@7.3.1(@types/node@22.19.6)(sass@1.77.4)(tsx@4.20.6))
@@ -1351,11 +1345,6 @@ packages:
 
   '@payloadcms/db-postgres@3.70.0':
     resolution: {integrity: sha512-y1f4/ncW4E1dKwsf5Ihspht+ujxIuUBxKgiV87cZtop1BrBAwwSgoRcKHH4kb8do57A+wb9zy8L4LX1U3g8l3g==}
-    peerDependencies:
-      payload: 3.70.0
-
-  '@payloadcms/db-sqlite@3.70.0':
-    resolution: {integrity: sha512-LKNM1oWTKXT677rNPIBbRo311sI2E2eSZEZFH0qEwHdh9CSM/OzpXnSdzENjTTaei4Aas3nA9oYc/MHkOh2Rhw==}
     peerDependencies:
       payload: 3.70.0
 
@@ -5242,10 +5231,12 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   '@libsql/core@0.14.0':
     dependencies:
       js-base64: 3.7.8
+    optional: true
 
   '@libsql/darwin-arm64@0.4.7':
     optional: true
@@ -5262,8 +5253,10 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
-  '@libsql/isomorphic-fetch@0.3.1': {}
+  '@libsql/isomorphic-fetch@0.3.1':
+    optional: true
 
   '@libsql/isomorphic-ws@0.1.5':
     dependencies:
@@ -5272,6 +5265,7 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   '@libsql/linux-arm64-gnu@0.4.7':
     optional: true
@@ -5306,7 +5300,8 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@neon-rs/load@0.0.4': {}
+  '@neon-rs/load@0.0.4':
+    optional: true
 
   '@neondatabase/serverless@1.0.2':
     dependencies:
@@ -5401,50 +5396,6 @@ snapshots:
       - sql.js
       - sqlite3
       - supports-color
-
-  '@payloadcms/db-sqlite@3.70.0(@neondatabase/serverless@1.0.2)(@types/pg@8.10.2)(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(pg@8.16.3)':
-    dependencies:
-      '@libsql/client': 0.14.0
-      '@payloadcms/drizzle': 3.70.0(@libsql/client@0.14.0)(@neondatabase/serverless@1.0.2)(@types/pg@8.10.2)(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(pg@8.16.3)
-      console-table-printer: 2.12.1
-      drizzle-kit: 0.31.7
-      drizzle-orm: 0.44.7(@libsql/client@0.14.0)(@neondatabase/serverless@1.0.2)(@types/pg@8.10.2)(pg@8.16.3)
-      payload: 3.70.0(graphql@16.12.0)(typescript@5.7.3)
-      prompts: 2.4.2
-      to-snake-case: 1.0.0
-      uuid: 9.0.0
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@prisma/client'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - better-sqlite3
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - utf-8-validate
 
   '@payloadcms/drizzle@3.70.0(@libsql/client@0.14.0)(@neondatabase/serverless@1.0.2)(@types/pg@8.10.2)(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(pg@8.16.3)':
     dependencies:
@@ -5834,6 +5785,7 @@ snapshots:
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 22.19.6
+    optional: true
 
   '@typescript-eslint/eslint-plugin@8.53.0(@typescript-eslint/parser@8.53.0(eslint@9.39.2)(typescript@5.7.3))(eslint@9.39.2)(typescript@5.7.3)':
     dependencies:
@@ -6347,7 +6299,8 @@ snapshots:
 
   damerau-levenshtein@1.0.8: {}
 
-  data-uri-to-buffer@4.0.1: {}
+  data-uri-to-buffer@4.0.1:
+    optional: true
 
   data-urls@5.0.0:
     dependencies:
@@ -6414,7 +6367,8 @@ snapshots:
 
   dequal@2.0.3: {}
 
-  detect-libc@2.0.2: {}
+  detect-libc@2.0.2:
+    optional: true
 
   detect-libc@2.1.2: {}
 
@@ -6913,6 +6867,7 @@ snapshots:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
+    optional: true
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -6953,6 +6908,7 @@ snapshots:
   formdata-polyfill@4.0.10:
     dependencies:
       fetch-blob: 3.2.0
+    optional: true
 
   fsevents@2.3.2:
     optional: true
@@ -7274,7 +7230,8 @@ snapshots:
 
   joycon@3.1.1: {}
 
-  js-base64@3.7.8: {}
+  js-base64@3.7.8:
+    optional: true
 
   js-tokens@4.0.0: {}
 
@@ -7385,6 +7342,7 @@ snapshots:
       '@libsql/linux-x64-gnu': 0.4.7
       '@libsql/linux-x64-musl': 0.4.7
       '@libsql/win32-x64-msvc': 0.4.7
+    optional: true
 
   lines-and-columns@1.2.4: {}
 
@@ -7707,13 +7665,15 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  node-domexception@1.0.0: {}
+  node-domexception@1.0.0:
+    optional: true
 
   node-fetch@3.3.2:
     dependencies:
       data-uri-to-buffer: 4.0.1
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
+    optional: true
 
   node-releases@2.0.27: {}
 
@@ -8026,7 +7986,8 @@ snapshots:
 
   process-warning@5.0.0: {}
 
-  promise-limit@2.7.0: {}
+  promise-limit@2.7.0:
+    optional: true
 
   prompts@2.4.2:
     dependencies:
@@ -8815,7 +8776,8 @@ snapshots:
     dependencies:
       xml-name-validator: 5.0.0
 
-  web-streams-polyfill@3.3.3: {}
+  web-streams-polyfill@3.3.3:
+    optional: true
 
   webidl-conversions@7.0.0: {}
 
