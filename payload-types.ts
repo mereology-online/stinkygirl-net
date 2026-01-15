@@ -124,9 +124,9 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  displayName?: string | null;
-  role: 'admin' | 'user';
+  displayName: string;
   bio?: string | null;
+  role: 'admin' | 'user';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -171,7 +171,6 @@ export interface Media {
 export interface Post {
   id: number;
   title: string;
-  author: number | User;
   content: {
     root: {
       type: string;
@@ -187,6 +186,7 @@ export interface Post {
     };
     [k: string]: unknown;
   };
+  author: number | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -274,8 +274,8 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   displayName?: T;
-  role?: T;
   bio?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -317,8 +317,8 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
-  author?: T;
   content?: T;
+  author?: T;
   updatedAt?: T;
   createdAt?: T;
 }
