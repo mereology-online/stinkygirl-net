@@ -1,48 +1,18 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
+import Link from 'next/link'
 
-import config from '@/payload.config'
-import './styles.css'
-
-export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
-
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
-
+export default function HomePage() {
   return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to stinkygirl.net</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-
-        </div>
-      </div>
-      <div className="footer">
-
+    <div style={{ textAlign: 'center', padding: '100px 20px' }}>
+      <h1 style={{ fontSize: '3rem', marginBottom: '10px' }}>WELCOME TO STINKYGIRL.HUB</h1>
+      <p style={{ color: '#888', marginBottom: '40px' }}>A community archive.</p>
+      
+      <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+        <Link href="/posts" style={{ padding: '15px 30px', background: 'red', color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>
+          ENTER FEED
+        </Link>
+        <Link href="/signup" style={{ padding: '15px 30px', border: '1px solid white', color: 'white', textDecoration: 'none' }}>
+          CREATE PROFILE
+        </Link>
       </div>
     </div>
   )
