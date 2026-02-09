@@ -1,102 +1,212 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { EditorProvider, useCurrentEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
+import LinkExtension from '@tiptap/extension-link'
+import { TextStyle } from '@tiptap/extension-text-style'
+
+import { MenuBar } from '@/components/MenuBar'
 
 export default function CreatePostPage() {
   const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const extensions = [
+    StarterKit,
+    Underline,
+    TextStyle,
+    LinkExtension.configure({ openOnClick: false }),
+  ]
+
+  return (
+    <div
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto', // Removed top margin to handle spacing inside
+        padding: '40px 20px',
+        fontFamily: 'monospace',
+        minHeight: '100vh', // Ensure the page is at least full screen
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <input
+        placeholder="TRANSMISSION_TITLE"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        style={{
+          width: '100%',
+          fontSize: '32px',
+          background: 'none',
+          border: 'none',
+          borderBottom: '2px solid #222',
+          color: '#ff0000',
+          outline: 'none',
+          marginBottom: '40px',
+          fontWeight: 'bold',
+          flexShrink: 0,
+        }}
+      />
+
+      <EditorProvider
+        extensions={extensions}
+        content="<p>Start your transmission...</p>"
+        immediatelyRender={false}
+        slotBefore={null}
+        editorProps={{
+          attributes: {
+            style:
+              'min-height: 800px; outline: none; padding: 30px; color: #ccc; background: #050505; border: 1px solid #333; font-size: 18px;',
+          },
+        }}
+      >
+        <EditorLayout title={title} router={router} />
+      </EditorProvider>
+    </div>
+  )
+}
+
+function EditorLayout({ title, router }: { title: string; router: any }) {
+  const { editor } = useCurrentEditor()
+  const [isOpen, setIsOpen] = useState(true)
+
+  if (!editor) return null
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        gap: '0px',
+        width: '100%',
+        position: 'relative',
+        flexGrow: 1, // Allow this container to take up remaining height
+      }}
+    >
+      {/* SIDEBAR WRAPPER */}
+      <div
+        style={{
+          position: 'sticky',
+          top: '20px', // The distance from the top of the screen when scrolling
+          alignSelf: 'flex-start',
+          zIndex: 30,
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        <aside
+          style={{
+            width: isOpen ? '200px' : '0px',
+            opacity: isOpen ? 1 : 0,
+            marginRight: isOpen ? '20px' : '0px',
+            overflow: 'hidden',
+            flexShrink: 0,
+            transition: 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)',
+            background: '#000', // Matches background to prevent overlap flicker
+          }}
+        >
+          <div style={{ width: '200px' }}>
+            <MenuBar />
+          </div>
+        </aside>
+
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            background: '#0a0a0a',
+            border: '1px solid #333',
+            color: isOpen ? '#444' : '#ff0000',
+            cursor: 'pointer',
+            padding: '10px 8px',
+            fontSize: '14px',
+            fontFamily: 'monospace',
+            marginRight: '20px',
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {isOpen ? '«' : '»'}
+        </button>
+      </div>
+
+      {/* EDITOR AREA */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <EditorContent editor={editor} />
+        <SubmitAction title={title} router={router} />
+      </div>
+    </div>
+  )
+}
+
+function SubmitAction({ title, router }: { title: string; router: any }) {
+  const { editor } = useCurrentEditor()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async () => {
+    if (!editor || !title) return
     setIsSubmitting(true)
+    const tiptapOutput = editor.getJSON()
+
+    // Mapping Tiptap JSON to Payload CMS Lexical-like structure
+    const payloadData = {
+      root: {
+        type: 'root',
+        format: '',
+        indent: 0,
+        version: 1,
+        children:
+          tiptapOutput.content?.map((node: any) => ({
+            ...node,
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
+            tag: node.type === 'heading' ? `h${node.attrs?.level || 1}` : undefined,
+          })) || [],
+      },
+    }
 
     try {
       const res = await fetch('/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          // Lexical Rich Text format for Payload 3.0
-          content: {
-            root: {
-              type: 'root',
-              children: [
-                {
-                  type: 'paragraph',
-                  children: [{ text: content, type: 'text' }],
-                },
-              ],
-              direction: 'ltr',
-              format: '',
-              indent: 0,
-              version: 1,
-            },
-          },
-        }),
+        body: JSON.stringify({ title, content: payloadData }),
       })
-
       if (res.ok) {
         router.push('/dashboard')
         router.refresh()
-      } else {
-        alert('Failed to create post. Are you logged in?')
       }
     } catch (err) {
       console.error(err)
-      alert('An error occurred.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '60px auto', padding: '20px', fontFamily: 'monospace' }}>
-      <Link href="/dashboard" style={{ color: '#888', textDecoration: 'none' }}>{'<-- BACK_TO_DASHBOARD'}</Link>
-      
-      <h1 style={{ marginTop: '20px', borderBottom: '1px solid #333', paddingBottom: '10px' }}>
-        NEW_TRANSMISSION
-      </h1>
-
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '30px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label>TITLE</label>
-          <input
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            style={{ padding: '10px', background: '#111', color: 'white', border: '1px solid #444' }}
-          />
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label>BODY_TEXT</label>
-          <textarea
-            required
-            rows={10}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            style={{ padding: '10px', background: '#111', color: 'white', border: '1px solid #444', resize: 'vertical' }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          style={{
-            padding: '15px',
-            background: isSubmitting ? '#333' : 'red',
-            color: 'white',
-            border: 'none',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          {isSubmitting ? 'UPLOADING...' : 'BROADCAST_TO_NETWORK'}
-        </button>
-      </form>
-    </div>
+    <button
+      onClick={handleSubmit}
+      disabled={isSubmitting}
+      style={{
+        marginTop: '20px',
+        width: '100%',
+        padding: '20px',
+        background: isSubmitting ? '#222' : '#ff0000',
+        color: 'white',
+        border: 'none',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        fontFamily: 'monospace',
+        fontSize: '16px',
+        boxShadow: isSubmitting ? 'none' : '0 0 15px rgba(255, 0, 0, 0.3)',
+      }}
+    >
+      {isSubmitting ? 'UPLOADING...' : 'INITIATE_BROADCAST'}
+    </button>
   )
 }
