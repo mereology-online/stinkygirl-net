@@ -1,37 +1,67 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { EditorProvider, useCurrentEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import LinkExtension from '@tiptap/extension-link'
 import { TextStyle } from '@tiptap/extension-text-style'
-
 import { MenuBar } from '@/components/MenuBar'
 
 export default function CreatePostPage() {
-  const [title, setTitle] = useState('')
   const router = useRouter()
+  const [title, setTitle] = useState('')
+  const [mounted, setMounted] = useState(false)
 
-  const extensions = [
-    StarterKit,
-    Underline,
-    TextStyle,
-    LinkExtension.configure({ openOnClick: false }),
-  ]
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const editor = useEditor({
+    extensions: [StarterKit, Underline, TextStyle, LinkExtension.configure({ openOnClick: false })],
+    content: '<p>Start your transmission...</p>',
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        style:
+          'min-height: 700px; outline: none; padding: 30px; color: #ccc; background: #050505; border: 1px solid #333; font-size: 18px;',
+      },
+    },
+  })
+
+  const handleSubmit = async () => {
+    if (!editor || !title) return
+    const payload = {
+      root: {
+        type: 'root',
+        version: 1,
+        children:
+          editor.getJSON().content?.map((n: any) => ({ ...n, direction: 'ltr', version: 1 })) || [],
+      },
+    }
+    const res = await fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content: payload }),
+    })
+    if (res.ok) {
+      router.push('/dashboard')
+      router.refresh()
+    }
+  }
+
+  if (!mounted) return null
 
   return (
     <div
       style={{
         maxWidth: '1200px',
-        margin: '0 auto', // Removed top margin to handle spacing inside
+        margin: '0 auto',
         padding: '40px 20px',
         fontFamily: 'monospace',
-        minHeight: '100vh', // Ensure the page is at least full screen
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
+      {/* TITLE AT TOP */}
       <input
         placeholder="TRANSMISSION_TITLE"
         value={title}
@@ -46,105 +76,48 @@ export default function CreatePostPage() {
           outline: 'none',
           marginBottom: '40px',
           fontWeight: 'bold',
-          flexShrink: 0,
         }}
       />
 
-      <EditorProvider
-        extensions={extensions}
-        content="<p>Start your transmission...</p>"
-        immediatelyRender={false}
-        slotBefore={null}
-        editorProps={{
-          attributes: {
-            style:
-              'min-height: 800px; outline: none; padding: 30px; color: #ccc; background: #050505; border: 1px solid #333; font-size: 18px;',
-          },
-        }}
-      >
-        <EditorLayout title={title} router={router} />
-      </EditorProvider>
-    </div>
-  )
-}
-
-function EditorLayout({ title, router }: { title: string; router: any }) {
-  const { editor } = useCurrentEditor()
-  const [isOpen, setIsOpen] = useState(true)
-
-  if (!editor) return null
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        gap: '0px',
-        width: '100%',
-        position: 'relative',
-        flexGrow: 1, // Allow this container to take up remaining height
-      }}
-    >
-      {/* SIDEBAR WRAPPER */}
+      {/* GRID: TOOLBAR LEFT, TEXTAREA RIGHT */}
       <div
         style={{
-          position: 'sticky',
-          top: '20px', // The distance from the top of the screen when scrolling
-          alignSelf: 'flex-start',
-          zIndex: 30,
-          display: 'flex',
-          flexDirection: 'row',
+          display: 'grid',
+          gridTemplateColumns: '160px 1fr',
+          gap: '40px',
+          alignItems: 'start',
         }}
       >
-        <aside
-          style={{
-            width: isOpen ? '200px' : '0px',
-            opacity: isOpen ? 1 : 0,
-            marginRight: isOpen ? '20px' : '0px',
-            overflow: 'hidden',
-            flexShrink: 0,
-            transition: 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)',
-            background: '#000', // Matches background to prevent overlap flicker
-          }}
-        >
-          <div style={{ width: '200px' }}>
-            <MenuBar />
-          </div>
-        </aside>
+        <div style={{ position: 'sticky', top: '20px' }}>
+          <MenuBar editor={editor} />
+        </div>
 
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          style={{
-            background: '#0a0a0a',
-            border: '1px solid #333',
-            color: isOpen ? '#444' : '#ff0000',
-            cursor: 'pointer',
-            padding: '10px 8px',
-            fontSize: '14px',
-            fontFamily: 'monospace',
-            marginRight: '20px',
-            height: '40px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {isOpen ? '«' : '»'}
-        </button>
-      </div>
+        <div style={{ minWidth: 0 }}>
+          <EditorContent editor={editor} />
 
-      {/* EDITOR AREA */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <EditorContent editor={editor} />
-        <SubmitAction title={title} router={router} />
+          {/* SUBMIT AT BOTTOM OF TEXTAREA COLUMN */}
+          <button
+            onClick={handleSubmit}
+            style={{
+              marginTop: '40px',
+              width: '100%',
+              padding: '20px',
+              background: '#ff0000',
+              color: 'white',
+              border: 'none',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+            }}
+          >
+            INITIATE_BROADCAST
+          </button>
+        </div>
       </div>
     </div>
   )
 }
 
-function SubmitAction({ title, router }: { title: string; router: any }) {
-  const { editor } = useCurrentEditor()
+function SubmitAction({ title, router, editor }: { title: string; router: any; editor: any }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async () => {
@@ -152,7 +125,7 @@ function SubmitAction({ title, router }: { title: string; router: any }) {
     setIsSubmitting(true)
     const tiptapOutput = editor.getJSON()
 
-    // Mapping Tiptap JSON to Payload CMS Lexical-like structure
+    // YOUR ORIGINAL MAPPING LOGIC RESTORED
     const payloadData = {
       root: {
         type: 'root',

@@ -1,5 +1,5 @@
 'use client'
-import { useCurrentEditor, Editor } from '@tiptap/react'
+import { Editor } from '@tiptap/react'
 import React, { useState, useEffect } from 'react'
 
 /**
@@ -36,11 +36,10 @@ export const menuBarStateSelector = (editor: Editor | null) => {
   }
 }
 
-export function MenuBar() {
-  const { editor } = useCurrentEditor()
+// Fixed to accept editor as prop while keeping ALL your logic
+export function MenuBar({ editor }: { editor: Editor | null }) {
   const [, setUpdate] = useState(0)
 
-  // Sync Tiptap state with React state for instant "glow" updates
   useEffect(() => {
     if (!editor) return
     const updateHandler = () => setUpdate((s) => s + 1)
@@ -68,9 +67,9 @@ export function MenuBar() {
         display: 'flex',
         flexDirection: 'column',
         gap: '12px',
-        width: '160px', // Fixed width for sidebar
+        width: '160px',
         position: 'sticky',
-        top: '20px', // Distance from top of viewport when scrolling
+        top: '20px',
         maxHeight: 'calc(100vh - 40px)',
         overflowY: 'auto',
       }}
@@ -153,16 +152,6 @@ export function MenuBar() {
             active={s.isOrderedList}
             onMouseDown={exec(() => editor.chain().focus().toggleOrderedList().run())}
           />
-          {/* <MenuBtn
-            label="QUOTE"
-            active={s.isBlockquote}
-            onMouseDown={exec(() => editor.chain().focus().toggleBlockquote().run())}
-          />
-          <MenuBtn
-            label="CODE_BLOCK"
-            active={s.isCodeBlock}
-            onMouseDown={exec(() => editor.chain().focus().toggleCodeBlock().run())}
-          /> */}
         </div>
       </div>
 
