@@ -28,7 +28,7 @@ export default async function PostsPage() {
             <PostCard key={post.id} post={post} />
           ))
         ) : (
-          <p>NO POSTS FOUND IN DATABASE. GO TO /ADMIN TO CREATE ONE.</p>
+          <p>NO POSTS FOUND IN DATABASE.</p>
         )}
       </div>
 
