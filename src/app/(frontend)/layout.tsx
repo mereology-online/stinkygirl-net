@@ -11,87 +11,42 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const payload = await getPayload({ config })
   const { user } = await payload.auth({ headers })
 
+  // Logic to switch between narrow reader view and wide editor dashboard
+  const layoutClass = user ? 'editor-view' : 'reader-view'
+
   return (
     <html lang="en">
-      <body style={{ margin: 0, background: 'black', color: 'white' }}>
-        <div
-          id="app"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            overflowX: 'hidden',
-          }}
-        >
-          <header
-            style={{
-              borderBottom: '1px solid #333',
-              padding: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              zIndex: 100,
-              background: 'black',
-            }}
-          >
-            <Link
-              href="/"
-              style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                textDecoration: 'none',
-                color: 'red',
-                fontFamily: 'monospace',
-              }}
-            >
-              STINKYGIRL.NET
-            </Link>
-
-            <nav
-              style={{
-                display: 'flex',
-                gap: '20px',
-                alignItems: 'center',
-                fontFamily: 'monospace',
-              }}
-            >
-              <Link href="/posts" style={{ color: 'white', textDecoration: 'none' }}>
-                FEED
+      {/* Applying classes here allows the CSS to control the mobile-first behavior */}
+      <body className={`pretext-root ${layoutClass}`}>
+        <div id="app">
+          <header className="site-header">
+            <div className="header-container">
+              <Link href="/" className="logo">
+                STINKYGIRL.NET
               </Link>
-              {user ? (
-                <>
-                  <Link href="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>
-                    DASHBOARD
-                  </Link>
-                  <LogoutButton />
-                </>
-              ) : (
-                <>
-                  <Link href="/signup" style={{ color: 'white', textDecoration: 'none' }}>
-                    SIGNUP
-                  </Link>
-                  <Link href="/login" style={{ color: 'white', textDecoration: 'none' }}>
-                    LOGIN
-                  </Link>
-                </>
-              )}
-            </nav>
+
+              <nav className="site-nav">
+                <Link href="/posts">FEED</Link>
+                {user ? (
+                  <>
+                    <Link href="/dashboard">DASHBOARD</Link>
+                    <LogoutButton />
+                  </>
+                ) : (
+                  <>
+                    <Link href="/signup">SIGNUP</Link>
+                    <Link href="/login">LOGIN</Link>
+                  </>
+                )}
+              </nav>
+            </div>
           </header>
 
-          {/* MAIN CONTAINER: No padding here to allow sticky items to align with viewport */}
-          <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>{children}</main>
+          {/* Use the CSS class instead of inline flex styles to prevent squashing */}
+          <main className="main-content">{children}</main>
 
-          <footer
-            style={{
-              borderTop: '1px solid #333',
-              padding: '20px',
-              textAlign: 'center',
-              fontSize: '12px',
-              opacity: 0.6,
-              fontFamily: 'monospace',
-            }}
-          >
-            © 2026 STINKYGIRL.NET — ALL RIGHTS RESERVED
+          <footer className="site-footer">
+            <div className="footer-container">© 2026 STINKYGIRL.NET — ALL RIGHTS RESERVED</div>
           </footer>
         </div>
       </body>

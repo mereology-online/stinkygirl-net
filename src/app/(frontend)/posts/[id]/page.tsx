@@ -2,22 +2,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { notFound } from 'next/navigation'
 import React from 'react'
-
-// IMPORT CHECK: Ensure these are "export default"
 import PostContent from '@/components/PostContent'
 import AuthorSidebar from '@/components/AuthorSidebar'
 
-export default async function PostViewPage({ 
-  params 
-}: { 
-  params: Promise<{ id: string }> 
-}) {
-  // 1. Resolve the Next.js 15 params promise
+export default async function PostViewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
   const payload = await getPayload({ config })
 
-  // 2. Fetch the post with depth: 1 to get the Author details
   const post = await payload.findByID({
     collection: 'posts',
     id: id,
@@ -27,41 +18,26 @@ export default async function PostViewPage({
   if (!post) return notFound()
 
   return (
-    <div style={{ 
-      maxWidth: '1200px', 
-      margin: '60px auto', 
-      padding: '0 20px', 
-      fontFamily: 'monospace',
-      backgroundColor: '#000',
-      color: '#ccc'
-    }}>
-      <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
-        
+    /* We use main-wrapper to get the Pretext centering and max-width */
+    <div className="main-wrapper">
+      <div className="post-layout-grid">
         {/* MAIN CONTENT AREA */}
-        <main style={{ flex: 1, minWidth: 0 }}>
-          <header style={{ marginBottom: '40px' }}>
-            <h1 style={{ 
-              color: '#ff0000', 
-              fontSize: '42px', 
-              marginBottom: '10px',
-              textTransform: 'uppercase'
-            }}>
-              {post.title}
-            </h1>
-            <div style={{ fontSize: '12px', color: '#444' }}>
-              POST_ID: {id} // STATUS: DEPLOYED
-            </div>
+        <main className="post-main">
+          <header className="post-header">
+            <h1 className="post-title">{post.title}</h1>
+            <div className="post-meta">POST_ID: {id} // STATUS: DEPLOYED</div>
           </header>
 
-          {/* This component handles the Tiptap/Lexical JSON */}
-          <PostContent content={post.content} />
+          {/* This container now has the TipTap fixes applied via CSS */}
+          <div className="tiptap-content">
+            <PostContent content={post.content} />
+          </div>
         </main>
 
-        {/* SIDEBAR */}
-        <aside style={{ width: '300px', position: 'sticky', top: '40px', flexShrink: 0 }}>
+        {/* SIDEBAR: Will stack on mobile, stay sticky on desktop */}
+        <aside className="post-sidebar">
           <AuthorSidebar author={post.author} />
         </aside>
-
       </div>
     </div>
   )
