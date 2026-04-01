@@ -4,7 +4,7 @@
   --neon-yellow: #ffff00;
   --bg-black: #050505;
   --border-dim: #333;
-  --font-mono: 'Courier New', monospace;
+  --font-mono: 'Courier New', Courier, monospace;
   --measure: 65ch;
   --container-max: 1200px;
   --container-reading: 720px;
@@ -17,20 +17,30 @@
   -webkit-font-smoothing: antialiased;
 }
 
-html, body {
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden; /* Stops mobile side-scrolling */
-  margin: 0;
-  padding: 0;
-  background: var(--bg-black);
-  color: #eee;
-  font-family: system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
-}
-
 html {
   font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 32px;
+  background: var(--bg-black);
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-mono); /* FORCED MONOSPACE */
+  margin: 0;
+  padding: 0;
+  color: #eee;
+  line-height: 1.6;
+
+  @media (max-width: 1024px) {
+    font-size: 15px;
+    line-height: 24px;
+  }
 }
 
 /* --- 3. LAYOUT STRUCTURE --- */
@@ -48,15 +58,26 @@ html {
 }
 
 .site-header {
-  border-bottom: 1px solid #333;
-  padding: 40px 20px; /* Big padding for that zine look */
+  border-bottom: 1px solid var(--border-dim);
+  padding: 40px 20px;
   background: black;
   width: 100%;
 }
 
+.site-nav a {
+  color: #fff !important; 
+  text-decoration: none;
+  transition: color 0.1s ease-in-out; 
+}
+
+.site-nav a:hover {
+  color: var(--neon-red) !important;
+  text-shadow: 0 0 8px var(--neon-red);
+}
+
 .header-container, .footer-container {
   display: flex;
-  flex-direction: column; /* THIS STACKS THEM */
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   max-width: var(--container-max);
@@ -91,11 +112,17 @@ html {
 
 /* --- 5. TYPOGRAPHY & LOGO --- */
 h1 {
-  font-size: clamp(2.2rem, 10vw, 4rem);
+  font-family: var(--font-mono);
+  font-size: clamp(1.6rem, 7vw, 3rem);
   line-height: 1.1;
   color: var(--neon-red);
   margin-bottom: var(--vertical-step);
   text-transform: uppercase;
+  font-weight: bold;
+}
+
+p {
+  margin: 24px 0;
 }
 
 .logo {
@@ -116,10 +143,7 @@ h1 {
 .ProseMirror {
   padding: 1.5rem;
   word-break: break-word;
-}
-
-.tiptap-content .ProseMirror {
-  padding: 0; /* Cleaner look for readers */
+  font-family: var(--font-mono) !important; /* Force TipTap to use Courier too */
 }
 
 .vertical-decor {
@@ -128,17 +152,21 @@ h1 {
   top: 50%;
   transform: translateY(-50%);
   writing-mode: vertical-rl;
+  font-family: var(--font-mono);
   color: var(--neon-red);
   z-index: 1;
-  pointer-events: none; /* Click through to the editor */
+  pointer-events: none;
   opacity: 0.4;
 }
 
-@media (max-width: 768px) {
-  .vertical-decor {
-    position: relative;
-    writing-mode: horizontal-tb;
-    transform: none;
-    opacity: 1;
-  }
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: currentColor;
+  &:focus { opacity: 0.8; outline: none; }
+  &:active { opacity: 0.7; outline: none; }
 }
