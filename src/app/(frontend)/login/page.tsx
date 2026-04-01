@@ -30,27 +30,47 @@ export default function LoginPage() {
 
   return (
     <div style={{ padding: '100px', textAlign: 'center', fontFamily: 'monospace' }}>
-      <h1>LOGIN_REQUIRED</h1>
-      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px', margin: '0 auto' }}>
-        <input 
-          type="email" 
-          placeholder="EMAIL" 
-          value={email} 
-          onChange={e => setEmail(e.target.value)} 
+      <h1 style={{ textAlign: 'justify' }}>LOGIN_REQUIRED</h1>
+      <form
+        onSubmit={handleLogin}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          maxWidth: '300px',
+          margin: '0 auto',
+        }}
+      >
+        <input
+          type="email"
+          placeholder="EMAIL"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{ padding: '10px', background: '#111', color: 'white', border: '1px solid #333' }}
         />
-        <input 
-          type="password" 
-          placeholder="PASSWORD" 
-          value={password} 
-          onChange={e => setPassword(e.target.value)} 
+        <input
+          type="password"
+          placeholder="PASSWORD"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           style={{ padding: '10px', background: '#111', color: 'white', border: '1px solid #333' }}
         />
-        <button type="submit" style={{ background: 'red', color: 'white', border: 'none', padding: '10px', cursor: 'pointer' }}>
+        <button
+          type="submit"
+          style={{
+            background: 'red',
+            color: 'white',
+            border: 'none',
+            padding: '10px',
+            cursor: 'pointer',
+          }}
+        >
           {loading ? 'WAIT...' : 'CONNECT'}
         </button>
       </form>
-      <Link href="/signup" style={{ display: 'block', marginTop: '20px', color: '#555' }}>NEED AN ACCOUNT? SIGNUP</Link>
+      <Link href="/signup" style={{ display: 'block', marginTop: '20px', color: '#555' }}>
+        NEED AN ACCOUNT? SIGNUP
+      </Link>
     </div>
   )
 }
