@@ -11,43 +11,35 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const payload = await getPayload({ config })
   const { user } = await payload.auth({ headers })
 
-  // Logic to switch between narrow reader view and wide editor dashboard
-  const layoutClass = user ? 'editor-view' : 'reader-view'
-
   return (
     <html lang="en">
-      {/* Applying classes here allows the CSS to control the mobile-first behavior */}
-      <body className={`pretext-root ${layoutClass}`}>
+      <body>
         <div id="app">
           <header className="site-header">
-            <div className="header-container">
-              <Link href="/" className="logo">
-                STINKYGIRL.NET
-              </Link>
+            <Link href="/" className="logo">
+              STINKYGIRL.NET
+            </Link>
 
-              <nav className="site-nav">
-                <Link href="/posts">FEED</Link>
-                {user ? (
-                  <>
-                    <Link href="/dashboard">DASHBOARD</Link>
-                    <LogoutButton />
-                  </>
-                ) : (
-                  <>
-                    <Link href="/signup">SIGNUP</Link>
-                    <Link href="/login">LOGIN</Link>
-                  </>
-                )}
-              </nav>
-            </div>
+            <nav className="site-nav">
+              <Link href="/posts">FEED</Link>
+              {user ? (
+                <>
+                  <Link href="/dashboard">DASHBOARD</Link>
+                  <LogoutButton />
+                </>
+              ) : (
+                <>
+                  <Link href="/signup">SIGNUP</Link>
+                  <Link href="/login">LOGIN</Link>
+                </>
+              )}
+            </nav>
           </header>
 
-          {/* Use the CSS class instead of inline flex styles to prevent squashing */}
-          <main className="main-content">{children}</main>
+          {/* MAIN CONTAINER */}
+          <main>{children}</main>
 
-          <footer className="site-footer">
-            <div className="footer-container">© 2026 STINKYGIRL.NET — ALL RIGHTS RESERVED</div>
-          </footer>
+          <footer>© 2026 STINKYGIRL.NET — ALL RIGHTS RESERVED</footer>
         </div>
       </body>
     </html>

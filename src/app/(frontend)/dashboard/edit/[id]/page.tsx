@@ -35,8 +35,7 @@ export default function EditPostPage() {
       .then((data) => {
         setTitle(data.title)
 
-        // FIX: Payload stores the array inside root.children
-        // Tiptap needs the array to reconstruct the document
+       
         if (data.content?.root?.children) {
           editor.commands.setContent({
             type: 'doc',
